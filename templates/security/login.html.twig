@@ -3,26 +3,36 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 card p-4 shadow">
+            <form method="post">
+                <div class="text-center mb-4">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 100px;">
+                    <h1 class="h3 mb-3 font-weight-normal mt-2">Identification</h1>
+                </div>
+
+                {% if error %}
+                    <div class="alert alert-danger">Erreur. Recommencez</div>
+                {% endif %}
+
+                <label for="inputIdentifiant">Identifiant</label>
+                <input type="text" value="{{ last_username }}" name="identifiant" id="inputIdentifiant" class="form-control mb-3" autocomplete="username" required autofocus>
+
+                <label for="inputPassword">Mot de passe</label>
+                <input type="password" name="password" id="inputPassword" class="form-control mb-3" autocomplete="current-password" required>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-secondary" type="reset">Reset</button>
+                    <button class="btn btn-primary" type="submit">Valider</button>
+                    <a href="#" class="btn btn-outline-info">Ajout compte</a>
+                </div>
+            </form>
         </div>
-    {% endif %}
-
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputIdentifiant">Identifiant</label>
-    <input type="text" value="{{ last_username }}" name="identifiant" id="inputIdentifiant" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+    </div>
+</div>
 {% endblock %}
