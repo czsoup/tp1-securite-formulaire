@@ -1,19 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Création de compte{% endblock %}
+
+{% form_theme registrationForm 'bootstrap_5_layout.html.twig' %}
 
 {% block body %}
-    <h1>Register</h1>
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="col-11 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+        <div class="card shadow-lg border-0 p-4 my-5">
+            <div class="text-center mb-4">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="mb-3" style="width: 100px; height: auto;">
+                <h2 class="fw-bold text-dark">Nouveau Compte</h2>
+                <hr class="mx-auto w-25">
+            </div>
 
-    {{ form_errors(registrationForm) }}
+            {% if form_errors(registrationForm) %}
+                <div class="alert alert-danger border-0 small mb-3">
+                    {{ form_errors(registrationForm) }}
+                </div>
+            {% endif %}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.identifiant) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {{ form_start(registrationForm) }}
+                <div class="mb-3">
+                    {{ form_row(registrationForm.identifiant, {
+                        'label': 'IDENTIFIANT',
+                        'label_attr': {'class': 'small fw-bold text-secondary'},
+                        'attr': {'class': 'bg-light py-2', 'placeholder': 'Ex: 123456b'}
+                    }) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(registrationForm.plainPassword, {
+                        'label': 'MOT DE PASSE',
+                        'label_attr': {'class': 'small fw-bold text-secondary'},
+                        'attr': {'class': 'bg-light py-2', 'placeholder': '••••••••'}
+                    }) }}
+                </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                <div class="mb-4 form-check small text-secondary">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions') }}
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-outline-secondary w-100 py-2" onclick="location.reload()">Reset</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-success w-100 py-2 shadow-sm">Créer</button>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <p class="small text-secondary">Déjà inscrit ? 
+                        <a href="{{ path('app_login') }}" class="text-decoration-none fw-bold text-primary">Se connecter</a>
+                    </p>
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+</div>
 {% endblock %}

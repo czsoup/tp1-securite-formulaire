@@ -24,22 +24,27 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
     }
-
     public function authenticate(Request $request): Passport
     {
-        $identifiant = $request->getPayload()->getString('identifiant');
+        // 1. On récupère les données (on enlève le dd() !)
+        $identifiant = $request->request->get('identifiant', '');
+        $password = $request->request->get('password', '');
+        $csrfToken = $request->request->get('_csrf_token', '');
 
+        // 2. On garde le dernier identifiant en session pour Twig
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $identifiant);
 
+        // 3. On crée le Passport avec le badge CSRF
         return new Passport(
             new UserBadge($identifiant),
-            new PasswordCredentials($request->getPayload()->getString('password')),
+            new PasswordCredentials($password),
             [
-                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),            ]
+                // Assure-toi que 'login_item' est aussi dans ton fichier Twig !
+                new CsrfTokenBadge('login_item', $csrfToken),
+            ]
         );
     }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+  public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
